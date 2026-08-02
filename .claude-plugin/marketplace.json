@@ -1,0 +1,14 @@
+{
+  "name": "ogawa929",
+  "owner": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "description": "A personal plugin marketplace for Claude Code, hosting a curated collection of reusable skills.",
+  "plugins": [
+    {
+      "name": "hello-world",
+      "source": "./plugins/hello-world",
+      "description": "A minimal example plugin with a single /hello-world:greet skill — useful as a template for building your own plugins."
+    }
+  ]
+}

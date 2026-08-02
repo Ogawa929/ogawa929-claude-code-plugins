@@ -9,7 +9,7 @@ This repository is a personal plugin marketplace for [Claude Code](https://docs.
 Add this marketplace to Claude Code, then install any plugin by its namespaced name:
 
 ```
-/plugin marketplace add ogawa929/claude-plugins
+/plugin marketplace add Ogawa929/ogawa929-claude-code-plugins
 /plugin install hello-world@ogawa929
 ```
 
@@ -55,7 +55,7 @@ This project is released under the [MIT License](LICENSE).
 ### インストール
 
 ```
-/plugin marketplace add ogawa929/claude-plugins
+/plugin marketplace add Ogawa929/ogawa929-claude-code-plugins
 /plugin install hello-world@ogawa929
 ```
 
