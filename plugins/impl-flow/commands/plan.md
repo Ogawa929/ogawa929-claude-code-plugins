@@ -1,0 +1,61 @@
+---
+description: Turn a design (or direct requirements) into commit-sized implementation plan files, each self-contained enough to run in a brand-new Claude Code session (Phase 2 of impl-flow: design -> plan -> implement). Not a standalone command — only invoked via /impl-flow:spec or /impl-flow:all.
+argument-hint: [task-set directory, e.g. task/20260802-my-feature]
+disable-model-invocation: true
+user-invocable: false
+---
+
+# impl-flow: plan
+
+You are about to create the "implementation plans". Do not write any code yet. The goal is to produce a set of plan documents at a granularity that lets each subsequent implementation phase run safely in its own independent session.
+
+## Steps
+
+1. **Gather the input**
+   - If `/impl-flow:design` was just run in this same session, use the requirements finalized there — they live only in this conversation, nothing was written to disk for you to read.
+   - Otherwise (this command was invoked directly, standalone), check whether enough information is available to plan the implementation; if not, interview the user briefly yourself before continuing (you don't need the full multi-round rigor of `/impl-flow:design`, but don't guess at missing specifics either).
+
+2. **Identify or create the task-set directory**
+   - If `$ARGUMENTS` is given, treat it as the task-set directory and skip the rest of this step.
+   - Otherwise, use AskUserQuestion to confirm the root directory name where implementation plans are stored. Default: `task`.
+   - Look under `{task_dir}` for a directory that clearly overlaps with the requirements gathered in step 1. A task-set directory has the shape `{task_dir}/{yyyymmdd}-{title}/`; once planning has run in it, it contains a `before/` subdirectory (plans not yet executed) and an `after/` subdirectory (plans already committed). Its state is always determined by these two subdirectories, never guessed:
+     - `before/` has files and/or `after/` is empty or absent → this task set is **not finished**.
+     - `before/` is empty or absent and `after/` has files → this task set **looks finished**.
+     - Neither exists (a bare, empty task-set directory, or nothing at all) → planning hasn't happened there yet.
+   - If a relevant directory exists, tell the user plainly which of these states it's in, and ask whether to reuse it (adding more plans, or replacing the pending ones in `before/`) or start a fresh dated one. Never silently overwrite an existing plan file.
+   - If starting fresh, combine today's date (`{yyyymmdd}`) with a short title agreed on with the user (e.g. kebab-case) to create `{task_dir}/{yyyymmdd}-{title}/`.
+
+3. **Confirm the verification method**
+   - Check whether the user has a preferred verification method to build into the plans (e.g. running the existing test suite, adding unit tests for the affected scope, lint/typecheck only, manual verification steps, etc.).
+   - If not specified, propose several alternatives based on the state of the codebase and let the user choose via AskUserQuestion. Decide whether verification should differ per plan or be a single overall policy shared by all plans.
+
+4. **Create the implementation plans (using the Plan agent)**
+   - Delegate the actual planning to the Agent tool with `subagent_type: "Plan"` (Claude Code's standard implementation-planning agent). This agent cannot write files itself, so it must return each plan's full content directly in its response — see step 5. Do not just hand the task off blindly; make the following constraints explicit in the prompt:
+     - **Granularity: one commit = one implementation plan.** Split the work into units that are easy to review and roll back.
+     - **Each plan is assumed to run in a brand-new Claude Code session that holds none of this conversation's context.** The plan documents must not contain references that only make sense in this conversation (e.g. "as discussed above"). Write all necessary background, purpose, and technical context self-contained within each plan.
+     - **Each plan must open with a small structured header** giving its dependencies and file scope, exactly in this form:
+       ```
+       ---
+       depends_on: [none]   # or a list of seq numbers this plan requires to land first, e.g. [01, 02]
+       files:
+         - relative/path/to/file/one
+         - relative/path/to/file/two
+       ---
+       ```
+       This header is machine-read by `/impl-flow:implement` to decide what can run in parallel — it must be accurate and complete. A plan's `files` list is a hard boundary: the implementer must not touch files outside it (make this explicit in the plan body too, in the instructions the implementer will follow).
+     - Include the verification method decided in step 3 in each plan.
+
+5. **Save the plan files**
+   - After the `Plan` agent returns the plans, **you** (the calling session, which has `Write`) save each one — the `Plan` agent cannot write files itself.
+   - Create `{task-set directory}/before/` if it doesn't exist, and an empty `{task-set directory}/after/` alongside it.
+   - Save each plan as `{task-set directory}/before/{seq}-{title}.md` (`seq` is `01`, `02`, ... in dependency order; if `before/` or `after/` already contain plans from an earlier run, continue the numbering from the highest existing `seq` instead of restarting at `01`).
+   - Each file should include, after the structured header from step 4:
+     - Purpose / goal
+     - Prerequisites / dependencies on other plans, in prose (restating `depends_on`, for a human reader)
+     - Implementation steps
+     - Verification method and definition of done
+     - Suggested commit message
+
+6. **Closing**
+   - Present the list of created plans (seq / title / dependencies / files touched) to the user as a table and invite review.
+   - Let the user know that once review, revisions, or distribution are done (in this session or a later one), they can start implementation with `/impl-flow:implement {task-set directory}` whenever ready — it will pick up whatever is still in `before/`.
