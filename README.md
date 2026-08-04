@@ -24,7 +24,7 @@ Plugin skills are namespaced to their plugin name, so the example skill above is
 | Name | Description |
 |------|-------------|
 | `hello-world` | A minimal example plugin with a single `/hello-world:greet` skill — useful as a template for building your own plugins. |
-| `impl-flow` | Breaks a feature down into commit-sized implementation plans and executes them with subagents: `/impl-flow:design`, `/impl-flow:plan`, `/impl-flow:implement` run independently, or `/impl-flow:all` runs the full pipeline in one go. |
+| `impl-flow` | Breaks a feature down into commit-sized implementation plans and executes them with subagents: `/impl-flow:spec` (design+plan) and `/impl-flow:implement` run independently, or `/impl-flow:all` runs the full pipeline in one go. |
 
 ## Adding a New Plugin
 

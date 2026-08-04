@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # impl-flow: all
 
-Read the following three files completely, in this exact order, and carry out everything they say — do not summarize, skip, or shortcut any step. Treat this exactly as if the user had typed `/impl-flow:design`, then `/impl-flow:plan`, then `/impl-flow:implement` in sequence, with `$ARGUMENTS` passed to the first one:
+Read the following three files completely, in this exact order, and carry out everything they say — do not summarize, skip, or shortcut any step. `design.md` and `plan.md` are internal instruction files, not standalone commands. Follow all three in sequence, passing `$ARGUMENTS` to the first one:
 
 1. `${CLAUDE_SKILL_DIR}/design.md`
 2. `${CLAUDE_SKILL_DIR}/plan.md`

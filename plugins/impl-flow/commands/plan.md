@@ -1,7 +1,8 @@
 ---
-description: Turn a design (or direct requirements) into commit-sized implementation plan files, each self-contained enough to run in a brand-new Claude Code session (Phase 2 of impl-flow: design -> plan -> implement)
+description: Turn a design (or direct requirements) into commit-sized implementation plan files, each self-contained enough to run in a brand-new Claude Code session (Phase 2 of impl-flow: design -> plan -> implement). Not a standalone command — only invoked via /impl-flow:spec or /impl-flow:all.
 argument-hint: [task-set directory, e.g. task/20260802-my-feature]
 disable-model-invocation: true
+user-invocable: false
 ---
 
 # impl-flow: plan
@@ -10,15 +11,19 @@ You are about to create the "implementation plans". Do not write any code yet. T
 
 ## Steps
 
-1. **Identify the task-set directory**
-   - If `$ARGUMENTS` is given, treat it as the task-set directory.
-   - If not given, but `/impl-flow:design` was just run in this same session, use that directory.
-   - Otherwise, look under the task directory (default `task`) for candidates: a directory with a `design.md` but no `before/`/`after/` split yet (planning hasn't happened there). Let the user pick if there are multiple. If there are no candidates, this command should still work standalone: gather the requirements directly from the user (briefly, without assuming a `design.md` exists) and create a new task-set directory.
-   - If the chosen directory already has a `before/` and/or `after/` (i.e. planning already ran there before), tell the user plainly what's there — how many plans are still pending in `before/`, how many are already committed in `after/` — and confirm whether to add more plans, replace the pending ones, or abort, before writing anything. Never silently overwrite an existing plan file.
+1. **Gather the input**
+   - If `/impl-flow:design` was just run in this same session, use the requirements finalized there — they live only in this conversation, nothing was written to disk for you to read.
+   - Otherwise (this command was invoked directly, standalone), check whether enough information is available to plan the implementation; if not, interview the user briefly yourself before continuing (you don't need the full multi-round rigor of `/impl-flow:design`, but don't guess at missing specifics either).
 
-2. **Read the input**
-   - If `{task-set directory}/design.md` exists, read it and use it as the input for planning.
-   - If it doesn't exist (i.e. this command was invoked directly without the design phase), check whether enough information is available to plan the implementation, and ask the user about anything missing.
+2. **Identify or create the task-set directory**
+   - If `$ARGUMENTS` is given, treat it as the task-set directory and skip the rest of this step.
+   - Otherwise, use AskUserQuestion to confirm the root directory name where implementation plans are stored. Default: `task`.
+   - Look under `{task_dir}` for a directory that clearly overlaps with the requirements gathered in step 1. A task-set directory has the shape `{task_dir}/{yyyymmdd}-{title}/`; once planning has run in it, it contains a `before/` subdirectory (plans not yet executed) and an `after/` subdirectory (plans already committed). Its state is always determined by these two subdirectories, never guessed:
+     - `before/` has files and/or `after/` is empty or absent → this task set is **not finished**.
+     - `before/` is empty or absent and `after/` has files → this task set **looks finished**.
+     - Neither exists (a bare, empty task-set directory, or nothing at all) → planning hasn't happened there yet.
+   - If a relevant directory exists, tell the user plainly which of these states it's in, and ask whether to reuse it (adding more plans, or replacing the pending ones in `before/`) or start a fresh dated one. Never silently overwrite an existing plan file.
+   - If starting fresh, combine today's date (`{yyyymmdd}`) with a short title agreed on with the user (e.g. kebab-case) to create `{task_dir}/{yyyymmdd}-{title}/`.
 
 3. **Confirm the verification method**
    - Check whether the user has a preferred verification method to build into the plans (e.g. running the existing test suite, adding unit tests for the affected scope, lint/typecheck only, manual verification steps, etc.).

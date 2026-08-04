@@ -13,7 +13,7 @@
     {
       "name": "impl-flow",
       "source": "./plugins/impl-flow",
-      "description": "Breaks a feature down into commit-sized implementation plans and executes them with subagents. Run /impl-flow:design, /impl-flow:plan, and /impl-flow:implement independently, or /impl-flow:all to run the full pipeline in one go.",
+      "description": "Breaks a feature down into commit-sized implementation plans and executes them with subagents. Run /impl-flow:spec (design+plan) and /impl-flow:implement independently, or /impl-flow:all for the full pipeline in one go.",
       "category": "productivity",
       "tags": ["workflow", "planning", "subagents"]
     }

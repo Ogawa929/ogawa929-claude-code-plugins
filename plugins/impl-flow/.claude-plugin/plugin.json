@@ -1,7 +1,7 @@
 {
   "name": "impl-flow",
   "version": "0.1.0",
-  "description": "Breaks a feature down into commit-sized implementation plans and executes them with subagents: design, commit-sized implementation planning, and parallel-aware execution — invocable independently or all at once via /impl-flow:all.",
+  "description": "Breaks a feature down into commit-sized implementation plans and executes them with subagents. Run /impl-flow:spec (design+plan) and /impl-flow:implement independently, or /impl-flow:all for the full pipeline in one go.",
   "author": {
     "name": "Teruyoshi Ogawa"
   },
