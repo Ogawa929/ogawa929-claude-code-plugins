@@ -30,19 +30,30 @@ You are about to create the "implementation plans". Do not write any code yet. T
    - If not specified, propose several alternatives based on the state of the codebase and let the user choose via AskUserQuestion. Decide whether verification should differ per plan or be a single overall policy shared by all plans.
 
 4. **Create the implementation plans (using the Plan agent)**
-   - Delegate the actual planning to the Agent tool with `subagent_type: "Plan"` (Claude Code's standard implementation-planning agent). This agent cannot write files itself, so it must return each plan's full content directly in its response — see step 5. Do not just hand the task off blindly; make the following constraints explicit in the prompt:
+   - Delegate the actual planning to the Agent tool with `subagent_type: "Plan"` (Claude Code's standard implementation-planning agent). This agent cannot write files itself, so it must return each plan's full content directly in its response — see step 5.
+   - **Scale the planning run to the requirements.** By the time this step runs, the design phase has already established the shape of the work, so you know how hard it is. The Agent tool has no per-call effort parameter, so `model` and the `ultrathink` keyword are the only levers available at dispatch time:
+     - Requirements that are broad, architecturally load-bearing, span several subsystems, or still carry unresolved technical risk → dispatch with `model: "opus"` and include the word `ultrathink` in the prompt (Claude Code recognizes the keyword and adds an in-context instruction for deeper reasoning on that turn; it does not change the effort level sent to the API).
+     - Narrow, mechanical, or well-trodden requirements — one subsystem, an established pattern to copy — → dispatch with `model: "sonnet"`.
+     - Otherwise omit `model` and let it inherit. Either way the subagent inherits the session's effort level; do not try to pass `effort` to the Agent tool, it is not a parameter there.
+   - Do not just hand the task off blindly; make the following constraints explicit in the prompt:
      - **Granularity: one commit = one implementation plan.** Split the work into units that are easy to review and roll back.
      - **Each plan is assumed to run in a brand-new Claude Code session that holds none of this conversation's context.** The plan documents must not contain references that only make sense in this conversation (e.g. "as discussed above"). Write all necessary background, purpose, and technical context self-contained within each plan.
-     - **Each plan must open with a small structured header** giving its dependencies and file scope, exactly in this form:
+     - **Each plan must open with a small structured header** giving its dependencies, file scope, and complexity, exactly in this form:
        ```
        ---
        depends_on: [none]   # or a list of seq numbers this plan requires to land first, e.g. [01, 02]
        files:
          - relative/path/to/file/one
          - relative/path/to/file/two
+       complexity: medium   # low | medium | high
        ---
        ```
-       This header is machine-read by `/impl-flow:implement` to decide what can run in parallel — it must be accurate and complete. A plan's `files` list is a hard boundary: the implementer must not touch files outside it (make this explicit in the plan body too, in the instructions the implementer will follow).
+       This header is machine-read by `/impl-flow:implement` to decide what can run in parallel and which implementation subagent to dispatch — it must be accurate and complete. A plan's `files` list is a hard boundary: the implementer must not touch files outside it (make this explicit in the plan body too, in the instructions the implementer will follow).
+     - **Each plan must declare its own `complexity`**, judged on its own merits rather than inherited from the overall feature — a large feature routinely contains `low` plans, and a small one can contain a `high` plan:
+       - `low` — mechanical and well-scoped. Config or wiring changes, a rename, one more case in an existing switch, copying an established pattern into one more place. Little judgement needed while implementing.
+       - `medium` — the default. New code following an existing pattern, a handful of files, ordinary edge cases and error handling.
+       - `high` — real design judgement is required *during* implementation: non-trivial algorithms or state management, concurrency, data migrations, cross-cutting refactors, tricky failure modes, or anywhere the plan unavoidably leaves decisions to the implementer.
+       - When torn between two levels, pick the higher one. This field selects the model and effort level the implementation subagent runs at, so under-rating a plan costs correctness while over-rating it only costs tokens.
      - Include the verification method decided in step 3 in each plan.
 
 5. **Save the plan files**
@@ -57,5 +68,5 @@ You are about to create the "implementation plans". Do not write any code yet. T
      - Suggested commit message
 
 6. **Closing**
-   - Present the list of created plans (seq / title / dependencies / files touched) to the user as a table and invite review.
+   - Present the list of created plans (seq / title / dependencies / files touched / complexity) to the user as a table and invite review. Mention that `complexity` decides which model and effort level each plan is implemented at, so it is worth correcting by hand if a rating looks wrong.
    - Let the user know that once review, revisions, or distribution are done (in this session or a later one), they can start implementation with `/impl-flow:implement {task-set directory}` whenever ready — it will pick up whatever is still in `before/`.

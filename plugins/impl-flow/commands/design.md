@@ -2,13 +2,14 @@
 description: Interactively interview the user to nail down requirements for a new implementation, purely through dialogue — produces no file, feeds directly into the plan phase (Phase 1 of impl-flow: design -> plan -> implement). Not a standalone command — only invoked via /impl-flow:spec or /impl-flow:all.
 argument-hint: [summary of what to implement]
 model: opus
+effort: xhigh
 disable-model-invocation: true
 user-invocable: false
 ---
 
 # impl-flow: design
 
-You are about to nail down the "design" for an implementation through a dialogue with the user. This phase runs on the opus model — prioritize deep thinking and careful back-and-forth with the user. Do not write any code, and do not write any file — the only deliverable of impl-flow is implementation plans, produced by `/impl-flow:plan`. This phase's job is purely to get the requirements right in conversation before that happens.
+You are about to nail down the "design" for an implementation through a dialogue with the user. This phase runs on the opus model at `xhigh` effort — prioritize deep thinking and careful back-and-forth with the user. The effort level is fixed high here on purpose: how complex the work really is only becomes clear *through* this interview, so there is nothing to scale it against yet, and this is the cheapest phase in output tokens but the one every later phase inherits its quality from. Do not write any code, and do not write any file — the only deliverable of impl-flow is implementation plans, produced by `/impl-flow:plan`. This phase's job is purely to get the requirements right in conversation before that happens.
 
 ## Steps
 
