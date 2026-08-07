@@ -1,0 +1,9 @@
+{
+  "name": "concise-persona",
+  "version": "0.1.0",
+  "description": "A \"Concise\" output style that keeps Claude's answers short and decision-oriented: conclusion first, supporting detail only when it changes a decision, and depth on request. Based on Anthropic's Claude Opus 5 prompting guide.",
+  "author": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "license": "MIT"
+}
