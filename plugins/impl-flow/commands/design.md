@@ -45,7 +45,7 @@ Do not write any code in this phase. This phase writes exactly one file — a **
        - Look under `{task_dir}` for an existing `{yyyymmdd}-{title}/` that clearly covers the same requirements. If there is one, show the user what is in it and ask whether to reuse it (updating its `usecases.md`) or start a fresh dated one. Never silently overwrite an existing `usecases.md` — if the user chooses to update it, show what is changing.
        - Otherwise create `{task_dir}/{yyyymmdd}-{title}/`, where `{yyyymmdd}` is today's date and `{title}` is a short kebab-case title agreed on with the user. Create only that directory and `usecases.md` inside it — leave `before/` and `after/` to the plan phase, which uses their presence to judge whether planning has already run.
      - **Carry the chosen path forward.** The plan phase reuses this exact directory rather than picking its own, so state it explicitly when you close out in step 5.
-   - **Structure.** Follow this outline:
+   - **Structure.** Follow this outline exactly — these sections and no others. Keep it lean: the interview is deliberately exhaustive, but the document that comes out of it is not a transcript of it. Resist the pull to add a scope section, a decisions table, or an alternatives log; everything that matters belongs in the use-case list.
      ```markdown
      # {Title}
 
@@ -53,28 +53,25 @@ Do not write any code in this phase. This phase writes exactly one file — a **
      - Status: requirements fixed (not yet implemented)
 
      ## Background / Purpose
-     ## Scope
-     ### In scope
-     ### Out of scope
-     ## Key decisions and rejected alternatives
-     | Decision | Chosen | Rejected alternatives | Why |
      ## Use cases
      | ID | Use case | Actor | Trigger | Expected result |
      | UC-01 | ... | ... | ... | ... |
      ### UC-01 {name}
-     - Preconditions
+     - Preconditions — omit the bullet entirely if there are none
      - Input
-     - Main flow
+     - Main flow — the observable steps only, at most a handful
      - Expected result
-     - Alternative / exception flows — each one with its own expected result
+     - Alternative / exception flows — each one with its own expected result; omit the bullet if there are none
      ## Relevant files and interfaces
      ## Open concerns
      ```
    - **The use-case list is the point of this document.** Hold it to these rules:
      - **Every use case must state a concrete, observable expected result** — a return value, a state change, what the user sees, the exact error surfaced. "Works correctly" or "handled appropriately" is not an expected result; if you cannot state what comes back, the requirement is not yet fixed and you should go back to step 3.
-     - **Cover failure and boundary cases as their own use cases**, not as footnotes on the happy path. Invalid input, missing permissions, absent or conflicting state, empty and maximum sizes, concurrent or repeated invocation — whichever of these actually apply here.
-     - Give each use case a stable `UC-nn` ID and keep the summary table consistent with the detail sections below it.
-     - Every decision confirmed via AskUserQuestion in step 3 belongs in either the use-case list or the decisions table, and everything the user ruled out belongs under "Out of scope" or in the rejected-alternatives column.
+     - **Cover failure and boundary cases as their own use cases**, not as footnotes on the happy path. Invalid input, missing permissions, absent or conflicting state, empty and maximum sizes, concurrent or repeated invocation — but only the ones that genuinely produce a different expected result *and* that someone could get wrong. This is a prompt to check the list, not to work through it: a case whose answer is "same as UC-01" is not a use case, and manufacturing one costs the reader more than it tells them.
+     - **Keep the detail sections short.** A detail section exists to pin down what a table row has no space for — a precondition, the exact shape of the input, the precise error that surfaces. One line per bullet is the norm; drop the bullets that have nothing to add. Do not narrate internals (what the runtime, the framework, or the kernel does in between), and do not restate the row in longer words. **If a detail section would say nothing beyond its row, do not write one** — the row stands on its own, and use cases with and without a detail section can sit side by side.
+     - Give each use case a stable `UC-nn` ID and keep the summary table consistent with any detail sections below it.
+     - **Every decision confirmed via AskUserQuestion in step 3 has to be visible in the use-case list itself** — as the behaviour a use case expects, not as a decision recorded next to it. What the user ruled out is expressed by its absence: it simply has no use case. Where that absence would read as an oversight rather than a choice, say so in one line under "Background / Purpose" ("{X} is not covered here") — do not reintroduce a scope section to hold it.
+     - Keep the alternatives that lost out of the document entirely. They belong to the interview, not to the specification of what the system does.
    - **Write it self-contained**, for someone who was not part of this conversation: no "as discussed above", no references to the interview itself. Describe behaviour in terms of the system, not in terms of the diff that will produce it.
 
 5. **Closing**
