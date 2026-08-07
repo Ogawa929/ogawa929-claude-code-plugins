@@ -12,18 +12,21 @@ You are about to create the "implementation plans". Do not write any code yet. T
 ## Steps
 
 1. **Gather the input**
-   - If `/impl-flow:design` was just run in this same session, use the requirements finalized there — they live only in this conversation, nothing was written to disk for you to read.
-   - Otherwise (this command was invoked directly, standalone), check whether enough information is available to plan the implementation; if not, interview the user briefly yourself before continuing (you don't need the full multi-round rigor of `/impl-flow:design`, but don't guess at missing specifics either).
+   - If `/impl-flow:design` was just run in this same session, use the requirements finalized there. It also settled the task-set directory and wrote `{task-set directory}/usecases.md`; treat that document as the authoritative statement of *what behaviour is expected*, and this conversation as the additional context around it. If the user edited the document after it was written, re-read it — their edits win over what was said in the conversation.
+   - Otherwise (this command was invoked directly, standalone), check whether enough information is available to plan the implementation:
+     - Look for a `usecases.md` at the root of the task-set directory you are being pointed at (or, if `$ARGUMENTS` is absent, under the existing task sets). If you find a plausible one, tell the user which file you intend to plan from and confirm it before relying on it — never silently plan from a document they did not point you at.
+     - If there is no such document and the request is under-specified, interview the user briefly yourself before continuing (you don't need the full multi-round rigor of `/impl-flow:design`, but don't guess at missing specifics either). Do not write a use-case document yourself in this path — that is the design phase's deliverable, and `/impl-flow:spec` is the way to get one.
 
 2. **Identify or create the task-set directory**
+   - If `/impl-flow:design` ran in this session, it already settled the task-set directory and put `usecases.md` there. **Use that directory and skip the rest of this step** — do not ask the user to choose again, and do not create a second dated directory for the same work.
    - If `$ARGUMENTS` is given, treat it as the task-set directory and skip the rest of this step.
    - Otherwise, use AskUserQuestion to confirm the root directory name where implementation plans are stored. Default: `task`.
    - Look under `{task_dir}` for a directory that clearly overlaps with the requirements gathered in step 1. A task-set directory has the shape `{task_dir}/{yyyymmdd}-{title}/`; once planning has run in it, it contains a `before/` subdirectory (plans not yet executed) and an `after/` subdirectory (plans already committed). Its state is always determined by these two subdirectories, never guessed:
      - `before/` has files and/or `after/` is empty or absent → this task set is **not finished**.
      - `before/` is empty or absent and `after/` has files → this task set **looks finished**.
-     - Neither exists (a bare, empty task-set directory, or nothing at all) → planning hasn't happened there yet.
+     - Neither exists (a bare task-set directory holding only `usecases.md`, an empty one, or nothing at all) → planning hasn't happened there yet. A directory left by the design phase looks exactly like this, and is the normal case to plan into.
    - If a relevant directory exists, tell the user plainly which of these states it's in, and ask whether to reuse it (adding more plans, or replacing the pending ones in `before/`) or start a fresh dated one. Never silently overwrite an existing plan file.
-   - If starting fresh, combine today's date (`{yyyymmdd}`) with a short title agreed on with the user (e.g. kebab-case) to create `{task_dir}/{yyyymmdd}-{title}/`.
+   - If starting fresh, combine today's date (`{yyyymmdd}`) with a short title agreed on with the user (e.g. kebab-case) to create `{task_dir}/{yyyymmdd}-{title}/`. Reaching this point means there is no `usecases.md` to plan from — say so plainly, since the plans will then rest on this conversation alone.
 
 3. **Confirm the verification method**
    - Check whether the user has a preferred verification method to build into the plans (e.g. running the existing test suite, adding unit tests for the affected scope, lint/typecheck only, manual verification steps, etc.).
