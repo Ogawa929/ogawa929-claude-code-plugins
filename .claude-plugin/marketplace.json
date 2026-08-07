@@ -23,6 +23,13 @@
       "description": "Adds a research/investigation skill that grounds Claude's answers in direct quotes and citations, and permits acknowledging uncertainty. Only activates for investigation-style tasks, so it stays out of the way during implementation.",
       "category": "quality",
       "tags": ["research", "hallucination", "guardrails"]
+    },
+    {
+      "name": "concise-persona",
+      "source": "./plugins/concise-persona",
+      "description": "A \"Concise\" output style that keeps Claude's answers short and decision-oriented: conclusion first, supporting detail only when it changes a decision, and depth on request. Select it under /config -> Output style.",
+      "category": "productivity",
+      "tags": ["output-style", "persona", "concise", "tone"]
     }
   ]
 }
