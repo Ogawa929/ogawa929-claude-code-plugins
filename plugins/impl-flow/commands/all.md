@@ -2,6 +2,7 @@
 description: Run the full impl-flow pipeline (design -> plan -> implement) in one invocation, with a single checkpoint after the plan is drafted before implementation begins
 argument-hint: [summary of what to implement]
 model: opus
+effort: xhigh
 disable-model-invocation: true
 ---
 
@@ -21,3 +22,5 @@ There is exactly one deviation from running them independently: after finishing 
 If the user chooses to stop, end here. Only continue into file 3's instructions if they choose to proceed.
 
 If `${CLAUDE_SKILL_DIR}/design.md` (or the other two) cannot be read, stop and report that clearly rather than trying to improvise the workflow from memory — this command has no logic of its own beyond what those three files say.
+
+Note on effort: this command's frontmatter sets `xhigh` for the whole invocation. A frontmatter effort level applies for the rest of the turn, so unlike running `/impl-flow:implement` on its own — which drops the leader to `medium` — the implementation phase is led at `xhigh` here. That only affects the leader's own orchestration; the code changes still run at whatever effort each plan's `complexity` selected, because the implementation subagents' frontmatter `effort` overrides the session level. If you want the cheaper leader, run `/impl-flow:spec` and `/impl-flow:implement` as two separate invocations instead.
