@@ -40,9 +40,17 @@ SEPARATOR = " | "
 COLOR_MODEL = "1;36"
 COLOR_DIR = "1;34"
 COLOR_GIT = "32"
+COLOR_REPO = "36"
+COLOR_WORKTREE = "35"
 COLOR_COST = "33"
 COLOR_DURATION = "90"
+COLOR_LINES = "32"
 COLOR_EFFORT = "35"
+COLOR_THINKING = "36"
+COLOR_FAST = "1;33"
+COLOR_STYLE = "36"
+COLOR_VIM = "1;35"
+COLOR_PR = "36"
 COLOR_UNKNOWN = "90"
 COLOR_CONTEXT_OK = "32"
 COLOR_CONTEXT_WARN = "33"
@@ -56,7 +64,12 @@ CONTEXT_BAR_CELLS = 10
 LABELS: dict[str, tuple[str, str]] = {
     "dir": ("\U0001f4c1 ", ""),
     "git": ("\U0001f33f ", "git:"),
+    "worktree": ("⑂ ", "wt:"),
     "effort": ("⚡", "effort:"),
+    "thinking": ("\U0001f9e0", "think:"),
+    "fast": ("\U0001f680", ""),
+    "style": ("✨", "style:"),
+    "pr": ("\U0001f517", "PR"),
 }
 
 # (filled cell, empty cell) for the context bar.
@@ -133,6 +146,35 @@ def as_text(value: Any) -> str | None:
 def label(key: str, emoji: bool) -> str:
     forms = LABELS[key]
     return forms[0] if emoji else forms[1]
+
+
+def color_for_percentage(pct: float) -> str:
+    """Map a 0-100 usage percentage to the shared OK/WARN/HIGH color bands."""
+    if pct < CONTEXT_WARN_PCT:
+        return COLOR_CONTEXT_OK
+    if pct < CONTEXT_HIGH_PCT:
+        return COLOR_CONTEXT_WARN
+    return COLOR_CONTEXT_HIGH
+
+
+def rate_limit_percentage(value: Any) -> float | None:
+    """Best-effort percentage extraction for one rate_limits window.
+
+    The shape of a `rate_limits.<window>` value is not confirmed by any spec
+    available here, so this accepts a bare number, or a dict carrying the
+    percentage under `used_percentage`, `percentage`, or `used` (checked in
+    that order); anything else fails closed with None.
+    """
+    number = as_number(value)
+    if number is not None:
+        return number
+    if isinstance(value, dict):
+        for key in ("used_percentage", "percentage", "used"):
+            if key in value:
+                number = as_number(value.get(key))
+                if number is not None:
+                    return number
+    return None
 
 
 def shorten_home(path: str) -> str:
@@ -271,6 +313,25 @@ def seg_git(ctx: Ctx) -> Segment | None:
     return Segment(label("git", ctx.emoji) + branch, COLOR_GIT)
 
 
+def seg_repo(ctx: Ctx) -> Segment | None:
+    """GitHub `owner/name`, absent whenever there is no origin remote."""
+    owner = as_text(dig(ctx.data, "workspace", "repo", "owner"))
+    name = as_text(dig(ctx.data, "workspace", "repo", "name"))
+    if owner is None or name is None:
+        return None
+    return Segment(f"{owner}/{name}", COLOR_REPO)
+
+
+def seg_worktree(ctx: Ctx) -> Segment | None:
+    """Git worktree name, falling back to `worktree.name` when unset."""
+    name = as_text(dig(ctx.data, "workspace", "git_worktree"))
+    if name is None:
+        name = as_text(dig(ctx.data, "worktree", "name"))
+    if name is None:
+        return None
+    return Segment(label("worktree", ctx.emoji) + name, COLOR_WORKTREE)
+
+
 def seg_context(ctx: Ctx) -> Segment | None:
     """Context window usage bar. Always rendered, even when usage is unknown."""
     window = dig(ctx.data, "context_window")
@@ -288,13 +349,7 @@ def seg_context(ctx: Ctx) -> Segment | None:
     pct = max(0.0, min(100.0, pct))
     filled = max(0, min(CONTEXT_BAR_CELLS, int(round(pct / 10))))
     bar = filled_char * filled + empty_char * (CONTEXT_BAR_CELLS - filled)
-    if pct < CONTEXT_WARN_PCT:
-        color = COLOR_CONTEXT_OK
-    elif pct < CONTEXT_HIGH_PCT:
-        color = COLOR_CONTEXT_WARN
-    else:
-        color = COLOR_CONTEXT_HIGH
-    return Segment(f"{bar} {int(round(pct))}%", color)
+    return Segment(f"{bar} {int(round(pct))}%", color_for_percentage(pct))
 
 
 def seg_cost(ctx: Ctx) -> Segment | None:
@@ -319,6 +374,19 @@ def seg_duration(ctx: Ctx) -> Segment | None:
     return Segment(text, COLOR_DURATION)
 
 
+def seg_lines(ctx: Ctx) -> Segment | None:
+    """Lines added/removed this session, only hidden when both are missing."""
+    added = as_number(dig(ctx.data, "cost", "total_lines_added"))
+    removed = as_number(dig(ctx.data, "cost", "total_lines_removed"))
+    if added is None and removed is None:
+        return None
+    # A missing side counts as 0 rather than hiding the whole segment, so the
+    # row layout stays stable even when only one count is present.
+    added_count = int(added) if added is not None else 0
+    removed_count = int(removed) if removed is not None else 0
+    return Segment(f"+{added_count}/-{removed_count}", COLOR_LINES)
+
+
 def seg_effort(ctx: Ctx) -> Segment | None:
     # The whole `effort` key is absent on models without effort levels.
     level = as_text(dig(ctx.data, "effort", "level"))
@@ -327,14 +395,80 @@ def seg_effort(ctx: Ctx) -> Segment | None:
     return Segment(label("effort", ctx.emoji) + level, COLOR_EFFORT)
 
 
+def seg_thinking(ctx: Ctx) -> Segment | None:
+    enabled = dig(ctx.data, "thinking", "enabled")
+    if not isinstance(enabled, bool):
+        return None
+    state = "on" if enabled else "off"
+    return Segment(label("thinking", ctx.emoji) + state, COLOR_THINKING)
+
+
+def seg_fast(ctx: Ctx) -> Segment | None:
+    # Only rendered when fast mode is actually on; false or missing hides it.
+    fast_mode = dig(ctx.data, "fast_mode")
+    if fast_mode is not True:
+        return None
+    return Segment(label("fast", ctx.emoji) + "fast", COLOR_FAST)
+
+
+def seg_style(ctx: Ctx) -> Segment | None:
+    name = as_text(dig(ctx.data, "output_style", "name"))
+    if name is None or name.lower() == "default":
+        # The default style carries no information, so hide it.
+        return None
+    return Segment(label("style", ctx.emoji) + name, COLOR_STYLE)
+
+
+def seg_vim(ctx: Ctx) -> Segment | None:
+    mode = as_text(dig(ctx.data, "vim", "mode"))
+    if mode is None:
+        return None
+    return Segment(mode.upper(), COLOR_VIM)
+
+
+def seg_pr(ctx: Ctx) -> Segment | None:
+    number = as_number(dig(ctx.data, "pr", "number"))
+    if number is None:
+        return None
+    text = label("pr", ctx.emoji) + f"#{int(number)}"
+    state = as_text(dig(ctx.data, "pr", "review_state"))
+    if state is not None:
+        text += f" {state}"
+    return Segment(text, COLOR_PR)
+
+
+def seg_ratelimit(ctx: Ctx) -> Segment | None:
+    """5h/7d Claude usage percentages, hidden only when both are unreadable."""
+    five = rate_limit_percentage(dig(ctx.data, "rate_limits", "five_hour"))
+    seven = rate_limit_percentage(dig(ctx.data, "rate_limits", "seven_day"))
+    if five is None and seven is None:
+        return None
+    parts: list[str] = []
+    if five is not None:
+        parts.append(f"5h {int(round(five))}%")
+    if seven is not None:
+        parts.append(f"7d {int(round(seven))}%")
+    worst = max(v for v in (five, seven) if v is not None)
+    return Segment(" / ".join(parts), color_for_percentage(worst))
+
+
 SEGMENTS: dict[str, Callable[[Ctx], Segment | None]] = {
     "model": seg_model,
     "dir": seg_dir,
     "git": seg_git,
+    "repo": seg_repo,
+    "worktree": seg_worktree,
     "context": seg_context,
     "cost": seg_cost,
     "duration": seg_duration,
+    "lines": seg_lines,
     "effort": seg_effort,
+    "thinking": seg_thinking,
+    "fast": seg_fast,
+    "style": seg_style,
+    "vim": seg_vim,
+    "pr": seg_pr,
+    "ratelimit": seg_ratelimit,
 }
 
 
