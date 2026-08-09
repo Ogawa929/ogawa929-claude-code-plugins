@@ -1,0 +1,46 @@
+{
+  "hook_event_name": "Status",
+  "session_id": "33333333-4444-5555-6666-777777777777",
+  "transcript_path": "/tmp/.sample-transcript.jsonl",
+  "cwd": "/tmp",
+  "version": "2.1.153",
+  "model": {
+    "id": "claude-opus-4-5-20251101",
+    "display_name": "Opus"
+  },
+  "workspace": {
+    "current_dir": "/tmp",
+    "project_dir": "/tmp"
+  },
+  "output_style": {
+    "name": "Concise"
+  },
+  "cost": {
+    "total_cost_usd": 1.2345,
+    "total_duration_ms": 3725000,
+    "total_api_duration_ms": 600000,
+    "total_lines_added": 812,
+    "total_lines_removed": 305
+  },
+  "context_window": {
+    "current_usage": 130000,
+    "max_size": 200000,
+    "used_percentage": 65,
+    "remaining_percentage": 35
+  },
+  "effort": {
+    "level": "medium"
+  },
+  "thinking": {
+    "enabled": true
+  },
+  "fast_mode": true,
+  "rate_limits": {
+    "five_hour": {
+      "used_percentage": 72
+    },
+    "seven_day": {
+      "used_percentage": 88
+    }
+  }
+}
