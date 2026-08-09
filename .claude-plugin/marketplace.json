@@ -30,6 +30,13 @@
       "description": "A \"Concise\" output style that keeps Claude's answers short and decision-oriented: conclusion first, supporting detail only when it changes a decision, and depth on request. Select it under /config -> Output style.",
       "category": "productivity",
       "tags": ["output-style", "persona", "concise", "tone"]
+    },
+    {
+      "name": "statusline-pack",
+      "source": "./plugins/statusline-pack",
+      "description": "A configurable Claude Code status line: model, directory, git branch, context usage bar, cost, session duration and more, in one to three lines. Run /statusline-pack:setup to install a preset into ~/.claude and wire up settings.json, hand-edit ~/.claude/statusline-pack.json to change the segments, and /statusline-pack:restore to put your previous status line back.",
+      "category": "productivity",
+      "tags": ["statusline", "ui", "git", "context", "cost"]
     }
   ]
 }

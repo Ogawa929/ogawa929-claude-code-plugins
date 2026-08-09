@@ -27,6 +27,7 @@ Plugin skills are namespaced to their plugin name, so the example skill above is
 | `impl-flow` | Interviews you into a use-case document, breaks the feature down into commit-sized implementation plans, and executes them with subagents sized to each plan's declared complexity: `/impl-flow:spec` (design+plan) and `/impl-flow:implement` run independently, or `/impl-flow:all` runs the full pipeline in one go. |
 | `reduce-hallucinations` | An auto-triggered skill (no slash command) that grounds answers in direct quotes and citations during investigation/research tasks, while staying out of implementation work. |
 | `concise-persona` | A `Concise` [output style](https://code.claude.com/docs/en/output-styles) (not a skill) that keeps answers short and decision-oriented: conclusion first, supporting detail only when it changes a decision, depth on request. Enable it under `/config` → Output style, then `/clear`. |
+| `statusline-pack` | A configurable status line for Claude Code — model, directory, git branch, context bar, cost and more. `/statusline-pack:setup` installs a preset into `~/.claude` and wires up `settings.json`; edit `~/.claude/statusline-pack.json` to change the segments, and `/statusline-pack:restore` puts your previous status line back. |
 
 ## Adding a New Plugin
 
