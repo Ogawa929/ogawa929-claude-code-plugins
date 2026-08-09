@@ -23,6 +23,7 @@ import math
 import os
 import subprocess
 import sys
+import unicodedata
 from typing import Any, Callable, NamedTuple
 
 # Default layout used when no config file exists. Keep in sync with the
@@ -473,6 +474,94 @@ SEGMENTS: dict[str, Callable[[Ctx], Segment | None]] = {
 
 
 # --------------------------------------------------------------------------
+# width fitting
+# --------------------------------------------------------------------------
+
+
+def display_width(s: str) -> int:
+    """Return the number of terminal cells `s` occupies.
+
+    `len()` cannot be used for this: emoji and other East Asian wide
+    characters occupy two cells, and combining marks occupy zero. This must
+    only ever be called on plain text (no ANSI escapes), which the `Segment`
+    contract guarantees for segment text.
+    """
+    total = 0
+    for ch in s:
+        if unicodedata.combining(ch) != 0 or ch == "\ufe0f":
+            # Variation selector-16 (emoji presentation) never takes a cell of
+            # its own; the base character it follows already counted as wide.
+            continue
+        total += 2 if unicodedata.east_asian_width(ch) in ("W", "F") else 1
+    return total
+
+
+def truncate(text: str, budget: int) -> str:
+    """Shorten `text` to fit within `budget` cells, ending with an ellipsis.
+
+    Characters are added while the running width stays within `budget - 1`
+    cells, leaving room for the trailing "…" (width 1) so the result never
+    exceeds `budget` cells.
+    """
+    if budget <= 1:
+        return "…"
+    kept: list[str] = []
+    width = 0
+    limit = budget - 1
+    for ch in text:
+        ch_width = display_width(ch)
+        if width + ch_width > limit:
+            break
+        kept.append(ch)
+        width += ch_width
+    return "".join(kept) + "…"
+
+
+def terminal_budget() -> int | None:
+    """Return the usable line width from $COLUMNS, or None to skip fitting.
+
+    Fitting is skipped whenever COLUMNS is unset, not an integer, or not a
+    positive number: in every such case the line is printed in full, exactly
+    as before this feature existed.
+    """
+    raw = os.environ.get("COLUMNS")
+    if raw is None:
+        return None
+    try:
+        value = int(raw)
+    except ValueError:
+        return None
+    if value <= 0:
+        return None
+    return value
+
+
+def fit_segments(segments: list[Segment], budget: int | None) -> list[Segment]:
+    """Drop trailing segments, then truncate the first, to fit `budget` cells.
+
+    Operates purely on plain segment text, before any ANSI coloring is
+    applied, so width math never has to account for escape sequences.
+    """
+    if budget is None:
+        return segments
+    fitted = list(segments)
+    while len(fitted) > 1 and display_width(
+        SEPARATOR.join(s.text for s in fitted)
+    ) > budget:
+        fitted.pop()
+    if fitted and display_width(fitted[0].text) > budget:
+        fitted[0] = Segment(truncate(fitted[0].text, budget), fitted[0].color)
+    return fitted
+
+
+def fit_plain_line(text: str, budget: int | None) -> str:
+    """Truncate a single unstyled message line (error output) to `budget`."""
+    if budget is not None and display_width(text) > budget:
+        return truncate(text, budget)
+    return text
+
+
+# --------------------------------------------------------------------------
 # rendering
 # --------------------------------------------------------------------------
 
@@ -498,22 +587,26 @@ def paint(segment: Segment, use_color: bool) -> str:
     return f"\x1b[{segment.color}m{segment.text}\x1b[0m"
 
 
-def render_line(ids: list[str], ctx: Ctx) -> str | None:
+def render_line(ids: list[str], ctx: Ctx, budget: int | None) -> str | None:
     """Join the segments of one row, or return None if the row is empty.
 
     Segments that render nothing disappear together with their separator, and a
     row whose segments all disappeared is dropped rather than printed blank.
+    When `budget` is not None, trailing segments are dropped and the first
+    segment is truncated so the plain-text line never exceeds `budget` cells;
+    fitting happens before coloring, since width math must never see ANSI.
     """
-    parts: list[str] = []
+    segments: list[Segment] = []
     for segment_id in ids:
         segment = build_segment(segment_id, ctx)
         if segment is None or not segment.text:
             continue
-        parts.append(paint(segment, ctx.color))
-    if not parts:
+        segments.append(segment)
+    if not segments:
         return None
+    segments = fit_segments(segments, budget)
     # The separator itself stays uncolored.
-    return SEPARATOR.join(parts)
+    return SEPARATOR.join(paint(segment, ctx.color) for segment in segments)
 
 
 # --------------------------------------------------------------------------
@@ -537,20 +630,26 @@ def read_input() -> dict[str, Any]:
 
 
 def main() -> int:
+    # Read once and reuse for every line printed below: Claude Code sets
+    # COLUMNS/LINES before invoking this script (v2.1.153+), and it does not
+    # change mid-run.
+    budget = terminal_budget()
     try:
         data = read_input()
         try:
             lines, color, emoji = load_config()
         except ConfigError as error:
-            print(f"statusline-pack: config error ({shorten_home(error.path)})")
+            text = f"statusline-pack: config error ({shorten_home(error.path)})"
+            print(fit_plain_line(text, budget))
             return 0
         ctx = Ctx(data=data, emoji=emoji, color=color)
         for ids in lines:
-            rendered = render_line(ids, ctx)
+            rendered = render_line(ids, ctx, budget)
             if rendered is not None:
                 print(rendered)
     except Exception as error:  # never surface a traceback to the UI
-        print(f"statusline-pack: internal error: {type(error).__name__}")
+        text = f"statusline-pack: internal error: {type(error).__name__}"
+        print(fit_plain_line(text, budget))
     return 0
 
 
