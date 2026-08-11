@@ -32,6 +32,13 @@
       "tags": ["output-style", "persona", "concise", "tone"]
     },
     {
+      "name": "git-commit",
+      "source": "./plugins/git-commit",
+      "description": "An auto-triggered skill that applies a house commit convention: prefix-tagged subjects (feat/fix/docs/refactor/chore/revert), a 50-character noun-phrase summary with no trailing period, What in the subject and Why in the body, and revert-safe commit granularity. Follows the repository's existing commit language.",
+      "category": "workflow",
+      "tags": ["git", "commit", "convention", "conventional-commits"]
+    },
+    {
       "name": "statusline-pack",
       "source": "./plugins/statusline-pack",
       "description": "A configurable Claude Code status line: model, directory, git branch, context usage bar, cost, session duration and more, in one to three lines. Run /statusline-pack:setup to install a preset into ~/.claude and wire up settings.json, hand-edit ~/.claude/statusline-pack.json to change the segments, and /statusline-pack:restore to put your previous status line back.",
