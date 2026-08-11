@@ -1,6 +1,6 @@
 ---
 description: Execute the pending implementation plans in a task-set directory. The main session acts as leader and dispatches each plan to an implementation subagent sized to that plan's declared complexity, running independent plans in parallel within a single branch (Phase 3 of impl-flow: design -> plan -> implement)
-argument-hint: [task-set directory, e.g. task/20260802-my-feature]
+argument-hint: [task-set directory, e.g. tasks/20260802-my-feature]
 effort: medium
 disable-model-invocation: true
 ---
@@ -17,7 +17,7 @@ All work happens directly on the current branch, in the current working tree —
 
 1. **Identify the task-set directory**
    - If `$ARGUMENTS` is given, use it.
-   - If not, look under the task directory (default `task`) for task-set directories that have pending plans in `before/`, and let the user pick if there are multiple candidates.
+   - If not, look under the task directory (default `tasks`) for task-set directories that have pending plans in `before/`, and let the user pick if there are multiple candidates.
    - If `before/` is empty, tell the user this task set has nothing left to implement (everything is already in `after/`) and stop.
 
 2. **Read the plans and check for dependency cycles**
