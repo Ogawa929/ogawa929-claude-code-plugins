@@ -1,0 +1,9 @@
+{
+  "name": "harness-audit",
+  "version": "0.1.0",
+  "description": "Audits Claude Code instruction artifacts — SKILL.md files, slash commands, CLAUDE.md and .claude/rules, subagents, output styles, and plugin manifests — against Anthropic's published authoring guidance, then proposes concrete fixes and deletions.",
+  "author": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "license": "MIT"
+}
