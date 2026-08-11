@@ -1,0 +1,9 @@
+{
+  "name": "drawio-diagram",
+  "version": "0.2.0",
+  "description": "Layout rules for draw.io diagrams that stay readable to a human: no overlapping shapes, edges or labels, text that fits inside its shape, categories made visible through colour and position, and a canvas that grows to fit the content. Ships a validator script and per-notation rules for ER, sequence, state, network and class diagrams.",
+  "author": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "license": "MIT"
+}

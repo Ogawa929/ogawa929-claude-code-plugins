@@ -44,6 +44,13 @@
       "description": "A configurable Claude Code status line: model, directory, git branch, context usage bar, cost, session duration and more, in one to three lines. Run /statusline-pack:setup to install a preset into ~/.claude and wire up settings.json, hand-edit ~/.claude/statusline-pack.json to change the segments, and /statusline-pack:restore to put your previous status line back.",
       "category": "productivity",
       "tags": ["statusline", "ui", "git", "context", "cost"]
+    },
+    {
+      "name": "drawio-diagram",
+      "source": "./plugins/drawio-diagram",
+      "description": "An auto-triggered skill for draw.io / diagrams.net files that enforces human-readable layout: no overlapping shapes, edges or labels, text that fits inside its shape, categories shown through both colour and position, and a canvas enlarged to fit the content instead of the content squeezed to fit the canvas. Ships a validator script that checks the generated XML, and per-notation rules for ER, sequence, state, network and class diagrams.",
+      "category": "documentation",
+      "tags": ["drawio", "diagram", "layout", "mxgraph", "visualization"]
     }
   ]
 }
