@@ -1,0 +1,9 @@
+{
+  "name": "git-commit",
+  "version": "0.1.0",
+  "description": "Applies a house commit convention when creating commits: prefix-tagged subjects (feat/fix/docs/refactor/chore/revert), a 50-character noun-phrase summary, What in the subject and Why in the body, and revert-safe commit granularity.",
+  "author": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "license": "MIT"
+}
