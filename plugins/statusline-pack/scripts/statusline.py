@@ -37,24 +37,30 @@ SEPARATOR = " | "
 
 # SGR parameter strings, one per segment. Segments return these; only the line
 # assembler turns them into real escape sequences.
-COLOR_MODEL = "1;36"
+# `model` shares the `dir` blue, and `context`/`duration` share the `cost`
+# yellow, so the line reads as a few colour groups rather than a rainbow.
+COLOR_MODEL = "1;34"
 COLOR_DIR = "1;34"
 COLOR_GIT = "32"
 COLOR_REPO = "36"
 COLOR_WORKTREE = "35"
 COLOR_COST = "33"
-COLOR_DURATION = "90"
+COLOR_CONTEXT = COLOR_COST
+COLOR_DURATION = COLOR_COST
 COLOR_LINES = "32"
 COLOR_EFFORT = "35"
-COLOR_THINKING = "36"
+COLOR_THINKING = COLOR_EFFORT
 COLOR_FAST = "1;33"
-COLOR_STYLE = "36"
+COLOR_STYLE = COLOR_EFFORT
 COLOR_VIM = "1;35"
 COLOR_PR = "36"
 COLOR_UNKNOWN = "90"
 COLOR_CONTEXT_OK = "32"
 COLOR_CONTEXT_WARN = "33"
 COLOR_CONTEXT_HIGH = "31"
+# The context bar's OK band is the cost yellow, so its WARN band has to be
+# bold to read as a step up rather than as the same colour.
+COLOR_CONTEXT_WARN_BAR = "1;33"
 
 CONTEXT_WARN_PCT = 60.0
 CONTEXT_HIGH_PCT = 80.0
@@ -66,9 +72,9 @@ LABELS: dict[str, tuple[str, str]] = {
     "git": ("\U0001f33f ", "git:"),
     "worktree": ("⑂ ", "wt:"),
     "effort": ("⚡", "effort:"),
-    "thinking": ("\U0001f9e0", "think:"),
+    "thinking": ("\U0001f9e0 ", "think:"),
     "fast": ("\U0001f680", ""),
-    "style": ("✨", "style:"),
+    "style": ("✨ ", "style:"),
     "pr": ("\U0001f517", "PR"),
 }
 
@@ -154,6 +160,20 @@ def color_for_percentage(pct: float) -> str:
         return COLOR_CONTEXT_OK
     if pct < CONTEXT_HIGH_PCT:
         return COLOR_CONTEXT_WARN
+    return COLOR_CONTEXT_HIGH
+
+
+def context_color(pct: float) -> str:
+    """Colour bands for the context bar.
+
+    Same thresholds as `color_for_percentage`, but the OK band is the `cost`
+    yellow instead of green, so that at its normal level the bar stays part of
+    the cost/duration colour group and only breaks out of it to warn.
+    """
+    if pct < CONTEXT_WARN_PCT:
+        return COLOR_CONTEXT
+    if pct < CONTEXT_HIGH_PCT:
+        return COLOR_CONTEXT_WARN_BAR
     return COLOR_CONTEXT_HIGH
 
 
@@ -349,7 +369,7 @@ def seg_context(ctx: Ctx) -> Segment | None:
     pct = max(0.0, min(100.0, pct))
     filled = max(0, min(CONTEXT_BAR_CELLS, int(round(pct / 10))))
     bar = filled_char * filled + empty_char * (CONTEXT_BAR_CELLS - filled)
-    return Segment(f"{bar} {int(round(pct))}%", color_for_percentage(pct))
+    return Segment(f"{bar} {int(round(pct))}%", context_color(pct))
 
 
 def seg_cost(ctx: Ctx) -> Segment | None:

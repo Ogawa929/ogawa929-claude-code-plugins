@@ -26,7 +26,7 @@ All three presets are a single line, and each one extends the one above it.
 | --- | --- | --- |
 | `minimal` | `model`, `dir`, `git`, `context` | ~45 cols |
 | `standard` | …plus `cost`, `duration`, `effort` | ~70 cols |
-| `full` | …plus `pr`, `lines`, `thinking`, `style`, `ratelimit` | ~130 cols |
+| `full` | …plus `pr`, `lines`, `thinking`, `ratelimit`, `style` | ~130 cols |
 
 (Measured with a short project name and branch; a long directory or branch name pushes these up.)
 
@@ -77,14 +77,14 @@ Segments and display options live in `~/.claude/statusline-pack.json`:
 | `git` | `🌿 main` | `git branch --show-current` | hidden outside a git repo |
 | `repo` | `ogawa929/plugins` | `workspace.repo.owner` / `.name` | not in any preset |
 | `worktree` | `⑂ feature-x` | `workspace.git_worktree`, else `worktree.name` | not in any preset |
-| `context` | `▓▓▓░░░░░░░ 31%` | `context_window.used_percentage` | yellow at 60%, red at 80%; `--%` while unknown |
+| `context` | `▓▓▓░░░░░░░ 31%` | `context_window.used_percentage` | bold at 60%, red at 80%; `--%` while unknown |
 | `cost` | `$0.42` | `cost.total_cost_usd` | client-side estimate |
 | `duration` | `12m` | `cost.total_duration_ms` | |
 | `lines` | `+156/-23` | `cost.total_lines_added` / `_removed` | |
 | `effort` | `⚡high` | `effort.level` | absent on models without effort levels |
-| `thinking` | `🧠on` | `thinking.enabled` | |
+| `thinking` | `🧠 on` | `thinking.enabled` | |
 | `fast` | `🚀fast` | `fast_mode` | only rendered when enabled; not in any preset |
-| `style` | `✨Concise` | `output_style.name` | hidden for the `default` style |
+| `style` | `✨ Concise` | `output_style.name` | hidden for the `default` style |
 | `vim` | `NORMAL` | `vim.mode` | not in any preset |
 | `pr` | `🔗#42 pending` | `pr.number` / `pr.review_state` | |
 | `ratelimit` | `5h 24% / 7d 41%` | `rate_limits.five_hour` / `.seven_day` | yellow at 60%, red at 80% |

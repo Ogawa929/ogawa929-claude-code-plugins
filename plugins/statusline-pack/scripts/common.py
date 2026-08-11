@@ -42,8 +42,12 @@ PRESETS: dict[str, list[list[str]]] = {
         ["model", "dir", "git", "context", "cost", "duration", "effort"],
     ],
     "full": [
-        ["model", "dir", "git", "context", "cost", "duration", "effort",
-         "pr", "lines", "thinking", "style", "ratelimit"],
+        # Grouped by topic: where you are (model, dir), what the branch looks
+        # like (git, pr, lines), what the session has spent (context, cost,
+        # duration), and how the model is configured (effort, thinking,
+        # ratelimit, style).
+        ["model", "dir", "git", "pr", "lines", "context", "cost", "duration",
+         "effort", "thinking", "ratelimit", "style"],
     ],
 }
 
