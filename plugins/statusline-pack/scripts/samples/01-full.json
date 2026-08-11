@@ -1,0 +1,63 @@
+{
+  "hook_event_name": "Status",
+  "session_id": "11111111-2222-3333-4444-555555555555",
+  "transcript_path": "{CWD}/.sample-transcript.jsonl",
+  "cwd": "{CWD}",
+  "version": "2.1.153",
+  "model": {
+    "id": "claude-opus-4-5-20251101",
+    "display_name": "Opus"
+  },
+  "workspace": {
+    "current_dir": "{CWD}",
+    "project_dir": "{CWD}",
+    "repo": {
+      "owner": "ogawa929",
+      "name": "ogawa929-claude-code-plugins"
+    },
+    "git_worktree": "feature-statusline"
+  },
+  "worktree": {
+    "name": "feature-statusline"
+  },
+  "output_style": {
+    "name": "Concise"
+  },
+  "cost": {
+    "total_cost_usd": 0.4231,
+    "total_duration_ms": 742000,
+    "total_api_duration_ms": 121500,
+    "total_lines_added": 156,
+    "total_lines_removed": 23
+  },
+  "context_window": {
+    "current_usage": 62000,
+    "max_size": 200000,
+    "used_percentage": 31,
+    "remaining_percentage": 69
+  },
+  "effort": {
+    "level": "high"
+  },
+  "thinking": {
+    "enabled": true
+  },
+  "vim": {
+    "mode": "NORMAL"
+  },
+  "fast_mode": false,
+  "pr": {
+    "number": 42,
+    "review_state": "pending"
+  },
+  "rate_limits": {
+    "five_hour": {
+      "used_percentage": 24
+    },
+    "seven_day": {
+      "used_percentage": 41
+    }
+  },
+  "session_name": "statusline-pack work",
+  "prompt_id": "prompt_0001"
+}

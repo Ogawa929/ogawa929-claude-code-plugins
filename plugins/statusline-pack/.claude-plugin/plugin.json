@@ -1,0 +1,9 @@
+{
+  "name": "statusline-pack",
+  "version": "0.1.0",
+  "description": "A configurable Claude Code status line: model, directory, git branch, context usage, cost, session duration and more. Run /statusline-pack:setup to install a preset into ~/.claude and wire up settings.json, and /statusline-pack:restore to put your previous status line back.",
+  "author": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "license": "MIT"
+}
