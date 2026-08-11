@@ -14,9 +14,14 @@ Trim `$ARGUMENTS`. If it matches exactly `minimal`, `standard`, or `full`, use t
 
 Otherwise, use `AskUserQuestion` (exactly one question) to let the user pick. If `$ARGUMENTS` was non-empty but did not match one of the three presets, do not silently ignore it — tell the user their input was not recognized before asking the question, then let them choose. Offer these three options, each with a short description of what it renders:
 
-- `minimal` — 1 line: model, dir, git branch, context bar
-- `standard` — 2 lines: model/dir/git, then context bar, cost, duration, effort
-- `full` — 3 lines: everything in standard, plus PR, lines changed, thinking, output style, rate limits
+All three presets render on a single line and each one extends the previous, so the choice is
+about how much detail to show on a wide terminal:
+
+- `minimal` — model, dir, git branch, context bar (needs ~45 columns)
+- `standard` — everything in minimal, plus cost, duration, effort (needs ~70 columns)
+- `full` — everything in standard, plus PR, lines changed, thinking, output style, rate limits (needs ~130 columns)
+
+Mention, alongside the options, that the order is a priority order: when the terminal is narrower than the line needs, segments are dropped from the end, so `full` degrades towards `standard` and then towards `minimal` rather than wrapping. Picking `full` on a narrow terminal is safe — the tail simply appears when the window is widened.
 
 ## 2. Run the script
 

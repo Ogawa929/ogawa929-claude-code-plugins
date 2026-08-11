@@ -29,8 +29,7 @@ from typing import Any, Callable, NamedTuple
 # Default layout used when no config file exists. Keep in sync with the
 # `standard` preset in `common.py`.
 DEFAULT_LINES: list[list[str]] = [
-    ["model", "dir", "git"],
-    ["context", "cost", "duration", "effort"],
+    ["model", "dir", "git", "context", "cost", "duration", "effort"],
 ]
 
 CONFIG_BASENAME = "statusline-pack.json"

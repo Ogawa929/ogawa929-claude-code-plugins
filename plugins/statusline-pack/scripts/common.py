@@ -25,6 +25,12 @@ SETTINGS_NAME = "settings.json"
 
 # Layout presets written to statusline-pack.json.
 #
+# Every preset is a single line, and each one extends the previous one: the
+# order within the line is a priority order, because width fitting drops
+# segments from the end when the terminal is too narrow. Put anything you
+# always want to see first. A wide terminal shows all of "full"; a narrow one
+# degrades it towards "standard", then towards "minimal".
+#
 # NOTE: the "standard" preset must stay in sync with DEFAULT_LINES in
 # statusline.py -- they describe the same default layout, and statusline.py
 # falls back to DEFAULT_LINES when no config file is present.
@@ -33,13 +39,11 @@ PRESETS: dict[str, list[list[str]]] = {
         ["model", "dir", "git", "context"],
     ],
     "standard": [
-        ["model", "dir", "git"],
-        ["context", "cost", "duration", "effort"],
+        ["model", "dir", "git", "context", "cost", "duration", "effort"],
     ],
     "full": [
-        ["model", "dir", "git", "pr"],
-        ["context", "cost", "duration", "lines"],
-        ["effort", "thinking", "style", "ratelimit"],
+        ["model", "dir", "git", "context", "cost", "duration", "effort",
+         "pr", "lines", "thinking", "style", "ratelimit"],
     ],
 }
 

@@ -1,7 +1,7 @@
 # statusline-pack
 
 A configurable status line for Claude Code: model name, working directory, git branch, a context
-usage bar, cost, session duration, and more, rendered in one to three lines. Claude Code plugins
+usage bar, cost, session duration, and more, rendered on a single line. Claude Code plugins
 cannot ship a `statusLine` through their own `settings.json`, so this plugin instead provides a
 setup command that copies the renderer into your user config and wires `~/.claude/settings.json`
 to point at it.
@@ -20,18 +20,27 @@ argument, e.g. `/statusline-pack:setup full`. `/statusline-pack:restore` puts ba
 
 ## Presets
 
-| Preset | Lines |
-| --- | --- |
-| `minimal` | `[["model","dir","git","context"]]` |
-| `standard` | `[["model","dir","git"],["context","cost","duration","effort"]]` |
-| `full` | `[["model","dir","git","pr"],["context","cost","duration","lines"],["effort","thinking","style","ratelimit"]]` |
+All three presets are a single line, and each one extends the one above it.
+
+| Preset | Segments | Width needed |
+| --- | --- | --- |
+| `minimal` | `model`, `dir`, `git`, `context` | ~45 cols |
+| `standard` | …plus `cost`, `duration`, `effort` | ~70 cols |
+| `full` | …plus `pr`, `lines`, `thinking`, `style`, `ratelimit` | ~130 cols |
+
+(Measured with a short project name and branch; a long directory or branch name pushes these up.)
 
 Example output for `standard`:
 
 ```
-[Opus] 📁 my-app | 🌿 main
-▓▓▓░░░░░░░ 31% | $0.42 | 12m | ⚡high
+[Opus] | 📁 my-app | 🌿 main | ▓▓▓░░░░░░░ 31% | $0.42 | 12m | ⚡high
 ```
+
+**The order within a line is a priority order.** When the terminal is narrower than the line
+needs, segments are dropped from the end (see *Width fitting* below), so `full` degrades towards
+`standard` and then towards `minimal` as the window shrinks. Put whatever you always want to see
+first. Picking `full` on an 80-column terminal is therefore not wasteful — it just means the tail
+only appears when you widen the window.
 
 ## Configuration
 
@@ -40,17 +49,17 @@ Segments and display options live in `~/.claude/statusline-pack.json`:
 ```json
 {
   "lines": [
-    ["model", "dir", "git"],
-    ["context", "cost", "duration", "effort"]
+    ["model", "dir", "git", "context", "cost", "duration", "effort"]
   ],
   "color": true,
   "emoji": true
 }
 ```
 
-- `lines`: one array per output line. Segments within a line are joined with ` | `. A segment
-  that has no value to show disappears along with its separator, and a line whose segments all
-  disappeared is not printed at all.
+- `lines`: one array per output line — the presets ship a single line, but more than one is
+  supported. Segments within a line are joined with ` | `. A segment that has no value to show
+  disappears along with its separator, and a line whose segments all disappeared is not printed
+  at all.
 - `color`: set to `false` to disable ANSI escape codes entirely.
 - `emoji`: set to `false` to replace emoji with ASCII labels; the context bar switches from
   `▓░` to `#.`.
