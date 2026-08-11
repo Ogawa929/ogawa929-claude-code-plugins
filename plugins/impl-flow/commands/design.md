@@ -41,7 +41,7 @@ Do not write any code in this phase. This phase writes exactly one file — a **
      └── after/        <- created later by /impl-flow:plan
      ```
      - This means **the design phase is what fixes the task-set directory**, not the plan phase. Settle it here:
-       - Confirm the root directory where task sets are stored with AskUserQuestion. Default: `task`. If `{task_dir}` already exists with dated task sets in it, use it without asking.
+       - Confirm the root directory where task sets are stored with AskUserQuestion. Default: `tasks`. If `{task_dir}` already exists with dated task sets in it, use it without asking.
        - Look under `{task_dir}` for an existing `{yyyymmdd}-{title}/` that clearly covers the same requirements. If there is one, show the user what is in it and ask whether to reuse it (updating its `usecases.md`) or start a fresh dated one. Never silently overwrite an existing `usecases.md` — if the user chooses to update it, show what is changing.
        - Otherwise create `{task_dir}/{yyyymmdd}-{title}/`, where `{yyyymmdd}` is today's date and `{title}` is a short kebab-case title agreed on with the user. Create only that directory and `usecases.md` inside it — leave `before/` and `after/` to the plan phase, which uses their presence to judge whether planning has already run.
      - **Carry the chosen path forward.** The plan phase reuses this exact directory rather than picking its own, so state it explicitly when you close out in step 5.

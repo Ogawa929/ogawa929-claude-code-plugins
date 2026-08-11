@@ -1,6 +1,6 @@
 ---
 description: Turn a design (or direct requirements) into commit-sized implementation plan files, each self-contained enough to run in a brand-new Claude Code session (Phase 2 of impl-flow: design -> plan -> implement). Not a standalone command — only invoked via /impl-flow:spec or /impl-flow:all.
-argument-hint: [task-set directory, e.g. task/20260802-my-feature]
+argument-hint: [task-set directory, e.g. tasks/20260802-my-feature]
 disable-model-invocation: true
 user-invocable: false
 ---
@@ -20,7 +20,7 @@ You are about to create the "implementation plans". Do not write any code yet. T
 2. **Identify or create the task-set directory**
    - If `/impl-flow:design` ran in this session, it already settled the task-set directory and put `usecases.md` there. **Use that directory and skip the rest of this step** — do not ask the user to choose again, and do not create a second dated directory for the same work.
    - If `$ARGUMENTS` is given, treat it as the task-set directory and skip the rest of this step.
-   - Otherwise, use AskUserQuestion to confirm the root directory name where implementation plans are stored. Default: `task`.
+   - Otherwise, use AskUserQuestion to confirm the root directory name where implementation plans are stored. Default: `tasks`.
    - Look under `{task_dir}` for a directory that clearly overlaps with the requirements gathered in step 1. A task-set directory has the shape `{task_dir}/{yyyymmdd}-{title}/`; once planning has run in it, it contains a `before/` subdirectory (plans not yet executed) and an `after/` subdirectory (plans already committed). Its state is always determined by these two subdirectories, never guessed:
      - `before/` has files and/or `after/` is empty or absent → this task set is **not finished**.
      - `before/` is empty or absent and `after/` has files → this task set **looks finished**.
