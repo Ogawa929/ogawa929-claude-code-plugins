@@ -41,7 +41,7 @@
     {
       "name": "harness-audit",
       "source": "./plugins/harness-audit",
-      "description": "Audits the files that shape Claude's behaviour — SKILL.md files, slash commands, CLAUDE.md and .claude/rules, subagents, output styles and plugin manifests — against Anthropic's published authoring guidance. Run /harness-audit:harness-audit [path]; it inventories the artifacts with a scanner, checks hard limits, discoverability, conciseness and cross-file conflicts, and ends with a ranked list of fix and deletion proposals to approve.",
+      "description": "Audits the files that shape Claude's behaviour — SKILL.md files, slash commands, CLAUDE.md and .claude/rules, subagents, output styles and plugin manifests — against Anthropic's published authoring guidance. Run /harness-audit:audit [path]; it inventories the artifacts with a scanner, checks hard limits, discoverability, conciseness and cross-file conflicts, and ends with a ranked list of fix and deletion proposals to approve.",
       "category": "quality",
       "tags": ["skills", "claude-md", "prompt", "audit", "review", "context"]
     },
