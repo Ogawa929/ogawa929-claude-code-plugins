@@ -18,7 +18,6 @@ Checklist for `CLAUDE.md`, `CLAUDE.local.md`, and `.claude/rules/*.md`. These lo
 |------|-------|
 | File size | target under 200 lines per file; longer files reduce adherence |
 | `@path` imports | resolve to real files; max depth 4 hops; expanded into context at launch |
-| Auto memory `MEMORY.md` | only the first 200 lines / 25KB load |
 
 CLAUDE.md is context, not enforcement. An instruction that must hold regardless of Claude's judgement belongs in a hook or in `permissions.deny`, not here — flag "always/never" rules whose violation would be costly and suggest the enforcement mechanism.
 
@@ -62,7 +61,7 @@ Move out anything that is:
 
 ## Placement and precedence
 
-Load order, broadest first: managed policy → `~/.claude/CLAUDE.md` → project `./CLAUDE.md` or `./.claude/CLAUDE.md` → `./CLAUDE.local.md`. Everything is concatenated, so later files do not replace earlier ones — they just get read last.
+Load order, broadest first: managed policy → `~/.claude/CLAUDE.md` → project `./CLAUDE.md` or `./.claude/CLAUDE.md` → `./CLAUDE.local.md`. Everything is concatenated, so later files do not replace earlier ones — they just get read last. Files in subdirectories are not loaded at launch at all; they arrive when Claude reads a file there. `claudeMdExcludes` skips ancestor files by glob, which is the monorepo answer to another team's instructions leaking in.
 
 Flag: team-wide rules sitting in a user-level file, personal preferences committed into the project file, and a `CLAUDE.local.md` that is not gitignored.
 

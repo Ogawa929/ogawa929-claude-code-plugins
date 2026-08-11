@@ -24,7 +24,7 @@ Check:
 
 ## Output styles
 
-An output style is appended to the system prompt and applies to every response, so it is the highest-leverage and highest-risk artifact in the set. Frontmatter: `name` (a display label — capitalization and spaces are fine), `description`, `keep-coding-instructions`, `force-for-plugin`. Nothing else is recognized.
+An output style is appended to the system prompt and applies to every response in the main conversation — not to subagents, which run their own system prompt, though a fork inherits it. It is the highest-leverage and highest-risk artifact in the set. Frontmatter: `name` (a display label — capitalization and spaces are fine), `description`, `keep-coding-instructions`, `force-for-plugin`. Nothing else is recognized.
 
 - **`keep-coding-instructions`** defaults to `false`, which *removes* Claude Code's built-in software-engineering instructions. Flag any style used during coding work that leaves it unset — that is the single most common defect here.
 - **`force-for-plugin: true`** overrides the user's own `outputStyle` setting whenever the plugin is enabled. Flag it unless the plugin exists solely to impose that style.

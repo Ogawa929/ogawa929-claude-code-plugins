@@ -6,8 +6,8 @@ The audit ends in one report. Findings first, proposals last, nothing applied wi
 
 | Level | Meaning | Examples |
 |-------|---------|----------|
-| **Blocker** | The artifact fails to load, fails to be discovered, or actively misleads | invalid `name`, missing `description`, dead `@import`, contradicting rules, side-effecting skill that Claude can self-invoke |
-| **Should fix** | It works, but measurably underperforms | vague description, body over the line limit, orphaned bundled file, over-broad `allowed-tools`, unverifiable instruction |
+| **Blocker** | The artifact fails to load, fails to be discovered, or actively misleads | invalid `name` on a plugin skill, dead `@import`, contradicting rules, side-effecting skill that Claude can self-invoke |
+| **Should fix** | It works, but measurably underperforms | vague or missing `description` (discovery falls back to the first paragraph), body over the line limit, orphaned bundled file, over-broad `allowed-tools`, unverifiable instruction |
 | **Consider** | A judgement call with a defensible status quo | naming style, whether to split a reference file, tone |
 
 Rank by severity, then by how many sessions the problem touches — a defect in a file loaded every session outranks the same defect in a rarely-invoked skill.
@@ -68,10 +68,14 @@ For any fix whose wording is the point — descriptions, frontmatter values, rew
 
 State the estimated context saved when it is material (line counts are enough).
 
-If a proposal is risky or reversible only by hand — deleting a whole artifact, changing an output style, widening `permissionMode` — say so on the row.
+Deleting a whole artifact is the least reversible proposal in the set. Never propose one on the assumption that its trigger is gone: cite the search that found no remaining reference to it, and mark the row irreversible. Say the same for anything else that cannot be undone by editing text back — changing an output style, widening `permissionMode`.
+
+Line numbers go stale as soon as an earlier proposal lands. Two proposals against one file must not overlap, and proposals within a file are listed bottom-up so they can be applied in order.
 
 ## Closing
 
-End by asking the user which proposals to apply, using `AskUserQuestion` with options along the lines of: apply all fixes, apply blockers only, apply fixes and deletions, or nothing for now. Apply only what they pick, then report what changed.
+End by asking the user which proposals to apply, using `AskUserQuestion` with options along the lines of: apply everything, apply blockers only, apply only the rows they name (F1, D2, …), or nothing for now.
+
+Applying is a separate phase from the audit: it starts only after that answer, it covers only what the user picked, and it ends with a report of what actually changed.
 
 If there is nothing to propose, say exactly that and stop. Do not pad the report to look productive.

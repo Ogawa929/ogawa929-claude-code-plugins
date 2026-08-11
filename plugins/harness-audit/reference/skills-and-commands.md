@@ -17,7 +17,7 @@ Checklist for `skills/<name>/SKILL.md` and `commands/*.md`. Both use the same fr
 
 | Rule | Limit |
 |------|-------|
-| `name` | ≤64 chars, lowercase letters/numbers/hyphens only, no XML tags, must not contain `anthropic` or `claude` |
+| `name` | ≤64 chars, lowercase letters/numbers/hyphens only, no XML tags, must not contain `anthropic` or `claude` — binding for a **plugin** skill, whose `name` sets the command users type, and for anything packaged for claude.ai or the Skills API. In a personal or project skill the command comes from the directory and `name` is only a display label, so treat a violation there as a packaging risk, not a defect |
 | `description` | non-empty, ≤1,024 chars, no XML tags |
 | `description` + `when_to_use` | truncated at 1,536 chars in the skill listing — put the key use case first |
 | SKILL.md body | under 500 lines |
@@ -77,6 +77,7 @@ For bundled scripts, additionally: errors handled in the script rather than defe
 | Workflow with side effects (deploy, commit, send) | `disable-model-invocation: true` |
 | Background knowledge, not an action a user would invoke | `user-invocable: false` |
 | Reference knowledge Claude should apply when relevant | neither (the default) |
+| A user-invoked workflow with no side effects, where auto-triggering would be noise | `disable-model-invocation: true` |
 
 Flag a side-effecting skill that Claude can trigger on its own, and a knowledge-only skill cluttering the `/` menu.
 
