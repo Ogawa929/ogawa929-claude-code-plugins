@@ -19,7 +19,7 @@ about how much detail to show on a wide terminal:
 
 - `minimal` — model, dir, git branch, context bar (needs ~45 columns)
 - `standard` — everything in minimal, plus cost, duration, effort (needs ~70 columns)
-- `full` — everything in standard, plus PR, lines changed, thinking, rate limits, output style (needs ~130 columns)
+- `full` — everything in standard, plus lines changed, rate limits, thinking, output style (needs ~115 columns)
 
 Mention, alongside the options, that the order is a priority order: when the terminal is narrower than the line needs, segments are dropped from the end, so `full` degrades towards `standard` and then towards `minimal` rather than wrapping. Picking `full` on a narrow terminal is safe — the tail simply appears when the window is widened.
 

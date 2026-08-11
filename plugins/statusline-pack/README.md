@@ -26,7 +26,7 @@ All three presets are a single line, and each one extends the one above it.
 | --- | --- | --- |
 | `minimal` | `model`, `dir`, `git`, `context` | ~45 cols |
 | `standard` | …plus `cost`, `duration`, `effort` | ~70 cols |
-| `full` | …plus `pr`, `lines`, `thinking`, `ratelimit`, `style` | ~130 cols |
+| `full` | …plus `lines`, `ratelimit`, `thinking`, `style` | ~115 cols |
 
 (Measured with a short project name and branch; a long directory or branch name pushes these up.)
 
@@ -86,7 +86,7 @@ Segments and display options live in `~/.claude/statusline-pack.json`:
 | `fast` | `🚀fast` | `fast_mode` | only rendered when enabled; not in any preset |
 | `style` | `✨ Concise` | `output_style.name` | hidden for the `default` style |
 | `vim` | `NORMAL` | `vim.mode` | not in any preset |
-| `pr` | `🔗#42 pending` | `pr.number` / `pr.review_state` | |
+| `pr` | `🔗#42 pending` | `pr.number` / `pr.review_state` | not in any preset |
 | `ratelimit` | `5h 24% / 7d 41%` | `rate_limits.five_hour` / `.seven_day` | yellow at 60%, red at 80% |
 
 ## Files written to `~/.claude`
