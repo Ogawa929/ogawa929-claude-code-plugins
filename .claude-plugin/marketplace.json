@@ -39,6 +39,13 @@
       "tags": ["git", "commit", "convention", "conventional-commits"]
     },
     {
+      "name": "harness-audit",
+      "source": "./plugins/harness-audit",
+      "description": "Audits the files that shape Claude's behaviour — SKILL.md files, slash commands, CLAUDE.md and .claude/rules, subagents, output styles and plugin manifests — against Anthropic's published authoring guidance. Run /harness-audit:audit [path]; it inventories the artifacts with a scanner, checks hard limits, discoverability, conciseness and cross-file conflicts, and ends with a ranked list of fix and deletion proposals to approve.",
+      "category": "quality",
+      "tags": ["skills", "claude-md", "prompt", "audit", "review", "context"]
+    },
+    {
       "name": "statusline-pack",
       "source": "./plugins/statusline-pack",
       "description": "A configurable Claude Code status line: model, directory, git branch, context usage bar, cost, session duration and more, in one to three lines. Run /statusline-pack:setup to install a preset into ~/.claude and wire up settings.json, hand-edit ~/.claude/statusline-pack.json to change the segments, and /statusline-pack:restore to put your previous status line back.",
