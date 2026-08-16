@@ -25,11 +25,11 @@
       "tags": ["research", "hallucination", "guardrails"]
     },
     {
-      "name": "concise-persona",
-      "source": "./plugins/concise-persona",
-      "description": "A \"Concise\" output style that keeps Claude's answers short and decision-oriented: conclusion first, supporting detail only when it changes a decision, and depth on request. Select it under /config -> Output style.",
+      "name": "robotic-persona",
+      "source": "./plugins/robotic-persona",
+      "description": "A \"Robotic\" output style that strips answers down to telegraphic output: one fact per line, no copula, no connectives, no evaluative or emotional words. Japanese output drops です・ます and unambiguous particles, but restores anything whose absence would permit two readings. Select it under /config -> Output style.",
       "category": "productivity",
-      "tags": ["output-style", "persona", "concise", "tone"]
+      "tags": ["output-style", "persona", "terse", "tone"]
     },
     {
       "name": "git-commit",

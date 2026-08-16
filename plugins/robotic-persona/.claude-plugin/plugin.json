@@ -1,0 +1,9 @@
+{
+  "name": "robotic-persona",
+  "version": "0.1.0",
+  "description": "A \"Robotic\" output style that strips Claude's answers down to telegraphic output: no polite copula, no connectives, no evaluative or emotional words, one fact per line. Japanese output drops です・ます and unambiguous particles. Accuracy overrides terseness — particles come back whenever removing them would create ambiguity.",
+  "author": {
+    "name": "Teruyoshi Ogawa"
+  },
+  "license": "MIT"
+}
