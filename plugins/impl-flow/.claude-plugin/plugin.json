@@ -1,7 +1,7 @@
 {
   "name": "impl-flow",
-  "version": "0.3.0",
-  "description": "Interviews you into an adversarially reviewed use-case document, breaks the feature down into commit-sized implementation plans and executes them with subagents sized to each plan's complexity. Run /impl-flow:spec (design+plan) and /impl-flow:implement independently, or /impl-flow:all for the full pipeline in one go.",
+  "version": "0.4.0",
+  "description": "Interviews you into an adversarially reviewed use-case document, breaks the feature down into commit-sized implementation plans and executes them with subagents sized to each plan's complexity. Run /impl-flow:spec (design+plan) and /impl-flow:implement independently, or /impl-flow:all for the full pipeline in one go. For changes to something that already exists, /impl-flow:fix is a lighter fix mode that revises the existing use-case document and hunts for what a partial fix would leave behind.",
   "author": {
     "name": "Teruyoshi Ogawa"
   },
