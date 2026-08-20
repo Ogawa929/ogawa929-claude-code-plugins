@@ -1,9 +1,0 @@
-{
-  "name": "robotic-persona",
-  "version": "0.2.0",
-  "description": "A \"Robotic\" output style that strips Claude's answers down to telegraphic output for a PM reader: conclusion first, one fact per line, no copula, no connectives, no evaluative or emotional words. Claude reports to the reader as an SE to a PM — detail the decision turns on is included, the rest is left out. Every claim is labelled 確認済み / 推測 / 不明, and 不明 is declared rather than filled with a plausible guess.",
-  "author": {
-    "name": "Teruyoshi Ogawa"
-  },
-  "license": "MIT"
-}
