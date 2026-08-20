@@ -25,13 +25,6 @@
       "tags": ["research", "hallucination", "guardrails"]
     },
     {
-      "name": "robotic-persona",
-      "source": "./plugins/robotic-persona",
-      "description": "A \"Robotic\" output style that strips answers down to telegraphic output for a PM reader: conclusion first, one fact per line, no copula, no connectives, no evaluative or emotional words. Claude reports as an SE to a PM, including the detail a decision turns on and leaving out the rest, and labels every claim 確認済み / 推測 / 不明 — unknowns are declared, never guessed. Select it under /config -> Output style.",
-      "category": "productivity",
-      "tags": ["output-style", "persona", "terse", "tone"]
-    },
-    {
       "name": "git-commit",
       "source": "./plugins/git-commit",
       "description": "An auto-triggered skill that applies a house commit convention: prefix-tagged subjects (feat/fix/docs/refactor/chore/revert), a 50-character noun-phrase summary with no trailing period, What in the subject and Why in the body, and revert-safe commit granularity. Follows the repository's existing commit language.",
