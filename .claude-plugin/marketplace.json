@@ -18,25 +18,11 @@
       "tags": ["workflow", "planning", "subagents", "requirements", "bugfix"]
     },
     {
-      "name": "reduce-hallucinations",
-      "source": "./plugins/reduce-hallucinations",
-      "description": "Adds a research/investigation skill that grounds Claude's answers in direct quotes and citations, and permits acknowledging uncertainty. Only activates for investigation-style tasks, so it stays out of the way during implementation.",
-      "category": "quality",
-      "tags": ["research", "hallucination", "guardrails"]
-    },
-    {
       "name": "git-commit",
       "source": "./plugins/git-commit",
       "description": "An auto-triggered skill that applies a house commit convention: prefix-tagged subjects (feat/fix/docs/refactor/chore/revert), a 50-character noun-phrase summary with no trailing period, What in the subject and Why in the body, and revert-safe commit granularity. Follows the repository's existing commit language.",
       "category": "workflow",
       "tags": ["git", "commit", "convention", "conventional-commits"]
-    },
-    {
-      "name": "harness-audit",
-      "source": "./plugins/harness-audit",
-      "description": "Audits the files that shape Claude's behaviour — SKILL.md files, slash commands, CLAUDE.md and .claude/rules, subagents, output styles and plugin manifests — against Anthropic's published authoring guidance. Run /harness-audit:audit [path]; it inventories the artifacts with a scanner, checks hard limits, discoverability, conciseness and cross-file conflicts, and ends with a ranked list of fix and deletion proposals to approve.",
-      "category": "quality",
-      "tags": ["skills", "claude-md", "prompt", "audit", "review", "context"]
     },
     {
       "name": "statusline-pack",
