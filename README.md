@@ -10,20 +10,19 @@ Add this marketplace to Claude Code, then install any plugin by its namespaced n
 
 ```
 /plugin marketplace add Ogawa929/ogawa929-claude-code-plugins
-/plugin install hello-world@ogawa929
+/plugin install impl-flow@ogawa929
 ```
 
-Plugin skills are namespaced to their plugin name, so the example skill above is invoked as:
+Plugin skills are namespaced to their plugin name, so the plugin installed above provides commands such as:
 
 ```
-/hello-world:greet
+/impl-flow:spec
 ```
 
 ## Available Plugins
 
 | Name | Description |
 |------|-------------|
-| `hello-world` | A minimal example plugin with a single `/hello-world:greet` skill — useful as a template for building your own plugins. |
 | `impl-flow` | Interviews you into a use-case document that an independent agent then reviews adversarially, breaks the feature down into commit-sized implementation plans, and executes them with subagents sized to each plan's declared complexity: `/impl-flow:spec` (design+plan) and `/impl-flow:implement` run independently, or `/impl-flow:all` runs the full pipeline in one go. `/impl-flow:fix` is the lighter **fix mode** for changing something that already exists — instead of interviewing a new document into being, it classifies the report as an implementation defect, a specification defect or a new requirement, revises the affected use cases in the existing document, and runs a three-layer omission review (use-case consistency, the file set recorded in the task set's plans, then the repository at large) to catch what a partial fix would leave behind. Every plan it produces starts with a test that fails for the reported symptom. |
 | `git-commit` | An auto-triggered skill (no slash command) that applies a house commit convention when committing: prefix-tagged subjects (`feat`/`fix`/`docs`/`refactor`/`chore`/`revert`), a 50-character noun-phrase summary with no trailing period, What in the subject and Why in the body, and revert-safe commit granularity. Follows whatever language the repository's existing commits use. |
 | `statusline-pack` | A configurable status line for Claude Code — model, directory, git branch, context bar, cost and more. `/statusline-pack:setup` installs a preset into `~/.claude` and wires up `settings.json`; edit `~/.claude/statusline-pack.json` to change the segments, and `/statusline-pack:restore` puts your previous status line back. |
@@ -60,10 +59,10 @@ This project is released under the [MIT License](LICENSE).
 
 ```
 /plugin marketplace add Ogawa929/ogawa929-claude-code-plugins
-/plugin install hello-world@ogawa929
+/plugin install impl-flow@ogawa929
 ```
 
-スキルはプラグイン名でnamespace管理されているため、上記の例では`/hello-world:greet`として呼び出します。
+スキルはプラグイン名でnamespace管理されているため、上記の例では`/impl-flow:spec`のように呼び出します。
 
 ### 詳細について
 
